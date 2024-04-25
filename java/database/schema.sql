@@ -44,6 +44,7 @@ CREATE TABLE review (
     genres TEXT,
     background TEXT,
     synopsis TEXT,
+     UNIQUE (user_id, anime_title),
     CONSTRAINT FK_reviews_user FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
