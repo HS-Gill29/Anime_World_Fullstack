@@ -69,10 +69,15 @@ export default {
     font-size: 60px;
     justify-content: center;
     margin-top: 15px;
-    color: #364a66;
+    color: #e8e8f2;
+}
+.title:hover{
+  color: #0b0f13;
 }
   .login-container {
-    background-color: #e0cdb7;
+    background-image: url('/public/wp7684805.jpg');
+    background-position: center;
+    background-size: cover;
     width: 100vw;
     height: 100vh;
     position: absolute;
