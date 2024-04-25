@@ -13,7 +13,7 @@
         </div>
         <div class="review-content">
           <h4>{{ r.animeTitle }}</h4>
-          <p><strong>Rating:</strong> {{ r.rating }}</p>
+          <p><strong>Rating:</strong> {{ r.rating }} Stars</p>
           <p><strong>Review:</strong> {{ r.reviewText }}</p>
           <p><strong>Duration:</strong> {{ r.duration }}</p>
           <p><strong>Episodes:</strong> {{ r.episodes }}</p>
@@ -22,8 +22,7 @@
             <a :href="review.studioUrl" target="_blank">{{ r.studioName }}</a>
           </p>
           <p><strong>Genres:</strong> {{ r.genres }}</p>
-          <p><strong>Background:</strong> {{ r.background }}</p>
-          <p><strong>Synopsis:</strong> {{ r.synopsis }}</p>
+          <p><strong>Background:</strong> {{ r.background }}</p> 
           <div class="review-edit-container" v-if="r.reviewId">
             <button class="edit-review-button" @click="toggleForm">Edit Review</button>
             <form v-if="showForm" @submit.prevent="saveReviewChanges">

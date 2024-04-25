@@ -19,7 +19,7 @@ import { RouterLink } from 'vue-router';
 }
 
 nav#nav {
-  background-color: #333;
+  background-color: #e0cdb7;
   padding: 10px 20px;
   text-align: center;
 }
@@ -29,13 +29,13 @@ nav#nav {
   text-decoration: none;
   padding: 10px 15px;
   margin: 0 5px;
-  background-color: #007BFF;
+  background-color: #e0cdb7;
   border-radius: 5px;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .nav-link:hover, .nav-link:focus {
-  background-color: #0056b3;
+  background-color: #000;
   color: #ffffff;
 }
 

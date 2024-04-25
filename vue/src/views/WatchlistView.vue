@@ -1,6 +1,6 @@
 <template>
     <div class="watchlist-container">
-      <h3 class="watchlist-title">Watchlist:</h3>
+      <h3 class="watchlist-title">My Watchlist:</h3>
       <ul class="watchlist">
         <li v-for="watchlist in watchlists" :key="watchlist.watchlistId" class="watchlist-item">
           <div class="media">
@@ -13,7 +13,6 @@
             <p><strong>Studio:</strong> <a :href="watchlist.studioUrl" target="_blank">{{ watchlist.studioName }}</a></p>
             <p><strong>Genres:</strong> {{ watchlist.genres }}</p>
             <p><strong>Background:</strong> {{ watchlist.background }}</p>
-            <p class="synopsis"><strong>Synopsis:</strong> {{ watchlist.synopsis }}</p>
             <button class="delete-btn" @click="deleteFromWatchlist(watchlist.watchlistId)">Remove</button>
           </div>
         </li>

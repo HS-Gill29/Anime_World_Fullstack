@@ -10,11 +10,15 @@
         <p class="anime-info">Episodes: <span>{{ anime.episodes }}</span></p>
         <p class="anime-info">Studio: <a :href="anime.studios[0].url" target="_blank">{{ anime.studios[0].name }}</a></p>
         <p class="anime-info">Genres: <span>{{ anime.genres[0].name }}</span></p>
+        <p class="anime-info"> Video Link: 
+      <a :href="anime.trailer.url" target="_blank">{{ anime.trailer.embed_url }}</a></p>
+       <p class="anime-info"> Website Link: 
+       <a :href="anime.url" target="_blank">{{ anime.url }}</a></p>
         <p class="anime-background">Background: <span>{{ anime.background }}</span></p>
         <p class="anime-synopsis">Synopsis: <span>{{ anime.synopsis }}</span></p>
         <form @submit.prevent="submitReview">
           <input type="textarea" v-model="reviewText" placeholder="Enter your review" required>
-          <input type="number" v-model.number="reviewRating" placeholder="Rating (1-5)" min="1" max="5" required>
+          <input type="number" v-model.number="reviewRating" placeholder="Rating (1-5) Stars"  max="5" required>
           <button type="submit" class="submit-btn">Submit Review</button>
         </form>
         <button type="button" class="watchlist-btn" @click="addWatchlist">Add to Watchlist</button>
@@ -22,8 +26,6 @@
     </div>
   </div>
 </template>
-
-
 
 
 
@@ -54,7 +56,7 @@ export default {
     episodes: this.anime.episodes,
     studioName: this.anime.studios[0]?.name,
     studioUrl: this.anime.studios[0]?.url,
-    genres: this.anime.genres.map(genre => genre.name).join(', '),  // Joining genre names as a string
+    genres: this.anime.genres.map(genre => genre.name).join(', '), 
     background: this.anime.background,
     synopsis: this.anime.synopsis
       };
@@ -64,7 +66,7 @@ export default {
        console.log(review.userId)
         alert('Review submitted successfully!');
         this.reviewText = ''; // Reset form
-        this.reviewRating = 1;
+        this.reviewRating = '';
       } catch (error) {
         console.error('Failed to submit review:', error);
         alert('Failed to submit review.');
@@ -117,6 +119,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #1a1224;;
 }
 
 .image-container img {
@@ -126,20 +129,20 @@ export default {
 }
 
 .anime-title {
-  color: #333;
+  color: #eda553;
   font-size: 24px;
   margin-top: 10px;
 }
 
 .anime-info, .anime-background {
   font-size: 16px;
-  color: #666;
+  color: #c8c6c6;
   margin: 5px 0;
   text-align: justify;
 }
 
 .anime-info a {
-  color: #007BFF;
+  color: #b6b6b6;
   text-decoration: none;
 }
 
@@ -149,7 +152,7 @@ export default {
 
 .anime-synopsis {
   margin-top: 10px;
-  color: #444;
+  color: #c7c7c7;
   text-align: justify;
 }
 
@@ -157,11 +160,10 @@ form {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   margin-top: 20px;
 }
 
-input[type="text"], input[type="number"] {
+input[type="textarea"], input[type="number"] {
   padding: 10px;
   margin: 5px 0;
   border: 1px solid #ccc;
