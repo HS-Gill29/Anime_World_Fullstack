@@ -68,7 +68,7 @@ export default {
 .app {
   min-height: 100vh; 
   background-color: #e0cdb7;
-  background-image: url('/public/cream-color.jpg');
+  background-image: url('/cream-background.jpg');
   background-size: cover;
 }
 

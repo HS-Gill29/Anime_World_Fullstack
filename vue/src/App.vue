@@ -14,14 +14,11 @@ import { RouterLink } from 'vue-router';
 
 
 <style scoped>
-#capstone-app {
-  font-family: 'Arial', sans-serif;
-}
 
-nav#nav {
-  background-color: #e0cdb7;
-  padding: 10px 20px;
-  text-align: center;
+nav {
+  display: flex;
+  justify-content: center;
+  background-color: #cda949;
 }
 
 .nav-link {
@@ -29,9 +26,9 @@ nav#nav {
   text-decoration: none;
   padding: 10px 15px;
   margin: 0 5px;
-  background-color: #e0cdb7;
+  background-color: inherit;
   border-radius: 5px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 .nav-link:hover, .nav-link:focus {
@@ -48,6 +45,7 @@ nav#nav {
     display: block;
     margin: 5px auto;
     width: 90%;
+    text-align: center;
   }
 }
 </style>

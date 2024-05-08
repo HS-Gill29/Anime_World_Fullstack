@@ -10,10 +10,10 @@
         <p class="anime-info">Episodes: <span>{{ anime.episodes }}</span></p>
         <p class="anime-info">Studio: <a :href="anime.studios[0].url" target="_blank">{{ anime.studios[0].name }}</a></p>
         <p class="anime-info">Genres: <span>{{ anime.genres[0].name }}</span></p>
-        <p class="anime-info"> Video Link: 
-      <a :href="anime.trailer.url" target="_blank">{{ anime.trailer.embed_url }}</a></p>
+        <p class="anime-info">Trailer Link: 
+      <a :href="anime.trailer.embed_url" target="_blank">Watch Trailer</a></p>
        <p class="anime-info"> Website Link: 
-       <a :href="anime.url" target="_blank">{{ anime.url }}</a></p>
+       <a :href="anime.url" target="_blank">Website Link</a></p>
         <p class="anime-background">Background: <span>{{ anime.background }}</span></p>
         <p class="anime-synopsis">Synopsis: <span>{{ anime.synopsis }}</span></p>
         <form @submit.prevent="submitReview">

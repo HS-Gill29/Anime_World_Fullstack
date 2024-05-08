@@ -1,38 +1,39 @@
 <template>
-  <router-link to="/" class="title">ANIME WORLD</router-link>
-  <div id="register" class="text-center">
-    <form v-on:submit.prevent="register" class="register-form">
-      <p style="color: black;">Create Your Account </p>
-      <div v-if="registrationErrors" class="alert danger">
-        {{ registrationErrorMsg }}
-      </div>
-      <div class="form-input-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" v-model="user.username" required autofocus />
-      </div>
-      <div class="form-input-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" v-model="user.password" required />
-      </div>
-      <div class="form-input-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" v-model="user.confirmPassword" required />
-      </div>
-      <button type="submit" class="btn primary">Create Account</button>
-      <p class="login-link">
-        <router-link v-bind:to="{ name: 'login' }">Already have an account? Log in.</router-link>
-      </p>
-    </form>
-  </div>
-  <footer>
+  <div class="register-view">
+    <router-link to="/" class="title">ANIME WORLD</router-link>
+    <div id="register" class="text-center">
+      <form @submit.prevent="register" class="register-form">
+        <p class="form-title">Create Your Account</p>
+        <div v-if="registrationErrors" class="alert danger">
+          {{ registrationErrorMsg }}
+        </div>
+        <div class="form-input-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" v-model="user.username" required autofocus />
+        </div>
+        <div class="form-input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" v-model="user.password" required />
+        </div>
+        <div class="form-input-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" id="confirmPassword" v-model="user.confirmPassword" required />
+        </div>
+        <button type="submit" class="btn primary">Create Account</button>
+        <p class="login-link">
+          <router-link :to="{ name: 'login' }">Already have an account? Log in.</router-link>
+        </p>
+      </form>
+    </div>
     <div class="about-page">
       <h1>About Us</h1>
       <p>Welcome to our website! We are dedicated to providing you with the best experience possible.</p>
       <p>Our mission is to deliver high-quality content and services that meet your needs and exceed your expectations.</p>
       <p>Feel free to explore our site and learn more about what we have to offer.</p>
     </div>
-  </footer>
+  </div>
 </template>
+
 
 <script>
 import authService from '../services/AuthService';
@@ -84,28 +85,31 @@ export default {
 </script>
 
 <style scoped>
-.title{
-  background-color: #e0cdb7;
-    width: auto;
-    display: flex;
-    justify-content: center;
-    padding-top: 50px;
-    font-size: 30px;
+.register-view{
+  background: url('/public/cream-background.jpg') no-repeat center center fixed;
+  background-size: cover; /* Ensures the background covers the entire element */
+  height: 100vh; /* Optional: You might want to adjust the height */
+  width: 100%; 
 }
-.title:hover{
+.title {
+  background-color: inherit;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  font-size: 30px;
+}
+.title:hover {
   color: black;
 }
 strong {
-    color: #f0f0f0;
-    font-weight: 700;
+  color: #f0f0f0;
+  font-weight: 700;
 }
 #register {
   display: flex;
   justify-content: center;
-  height: 100%;
-  background-color: #e0cdb7;
 }
-
 .register-form {
   width: 100%; 
   max-width: 400px; 
@@ -115,20 +119,21 @@ strong {
   flex-direction: column;
   align-items: center; 
 }
-
 .form-input-group {
   width: 100%; 
   margin-bottom: 20px; 
 }
-
+.form-title {
+  margin-bottom: 10px;
+  color: black; 
+}
 label {
   display: block;
   margin-bottom: 5px;
   font-size: 16px; 
   font-weight: 600;
-  color:#0d2733;
+  color: #0d2733;
 }
-
 input {
   width: 100%; 
   height: 40px; 
@@ -138,12 +143,10 @@ input {
   border-radius: 4px; 
   background-color: #fafafa; 
 }
-
 input:focus {
   border-color: #0056b3; 
   outline: none;
 }
-
 .alert {
   width: 100%;
   padding: 12px;
@@ -155,7 +158,6 @@ input:focus {
   color: #721c24;
   font-size: 14px; 
 }
-
 .btn {
   padding: 10px 20px;
   width: 100%; 
@@ -168,22 +170,20 @@ input:focus {
   background-color: #007bff; 
   transition: background-color 0.3s; 
 }
-.btn:hover{
+.btn:hover {
   background-color: #196fcb;
 }
-
 .login-link {
   margin-top: 15px; 
   font-size: 14px; 
   color: #090a0b; 
 }
 .about-page {
-  background-color: #e0cdb7;
+  background-color: inherit;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
   text-align: center;
-  cursor:all-scroll;
 }
 .about-page h1 {
   font-size: 32px;
@@ -194,6 +194,6 @@ input:focus {
   line-height: 1.6;
   margin-bottom: 10px;
 }
-
 </style>
+
 
