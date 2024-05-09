@@ -62,8 +62,6 @@ export default {
       };
       try {
         await ProfileService.saveReview(review);
-        console.log("UserID from Vuex:", this.userId);
-       console.log(review.userId)
         alert('Review submitted successfully!');
         this.reviewText = ''; // Reset form
         this.reviewRating = '';

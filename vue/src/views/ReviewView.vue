@@ -2,36 +2,42 @@
   <div class="reviews-container">
     <h3 class="reviews-title">Reviews for Selected Anime:</h3>
     <ul class="review-list">
-      <li
-        v-for="r in reviews"
-        :key="r.reviewId"
-        class="review-item"
-        @click="selectReview(r)"
-      >
+      <li v-for="review in reviews" :key="review.reviewId" class="review-item">
         <div class="image-container">
-          <img :src="r.imgUrl" alt="Anime image" class="anime-img" />
+          <img :src="review.imgUrl" alt="Anime image" class="anime-img" />
         </div>
         <div class="review-content">
-          <h4>{{ r.animeTitle }}</h4>
-          <p><strong>Rating:</strong> {{ r.rating }} Stars</p>
-          <p><strong>Review:</strong> {{ r.reviewText }}</p>
-          <p><strong>Duration:</strong> {{ r.duration }}</p>
-          <p><strong>Episodes:</strong> {{ r.episodes }}</p>
+          <h4>{{ review.animeTitle }}</h4>
+          <p><strong>Rating:</strong> {{ review.rating }} Stars</p>
+          <p><strong>Review:</strong> {{ review.reviewText }}</p>
+          <p><strong>Duration:</strong> {{ review.duration }}</p>
+          <p><strong>Episodes:</strong> {{ review.episodes }}</p>
           <p>
             <strong>Studio:</strong>
-            <a :href="review.studioUrl" target="_blank">{{ r.studioName }}</a>
+            <a :href="review.studioUrl" target="_blank">{{
+              review.studioName
+            }}</a>
           </p>
-          <p><strong>Genres:</strong> {{ r.genres }}</p>
-          <p><strong>Background:</strong> {{ r.background }}</p> 
-          <div class="review-edit-container" v-if="r.reviewId">
-            <button class="edit-review-button" @click="toggleForm">Edit Review</button>
-            <form v-if="showForm" @submit.prevent="saveReviewChanges">
+          <p><strong>Genres:</strong> {{ review.genres }}</p>
+          <p><strong>Background:</strong> {{ review.background }}</p>
+          <button @click="deleteReview(review)">Delete Review</button>
+          <div class="review-edit-container">
+            <button
+              class="edit-review-button"
+              @click.stop="startEditing(review)"
+            >
+              Edit Review
+            </button>
+            <form
+              v-if="review.showForm"
+              @submit.prevent="saveReviewChanges(review)"
+            >
               <div class="form-group">
                 <label for="reviewRating">Rating:</label>
                 <input
                   type="number"
                   id="reviewRating"
-                  v-model.number="r.rating"
+                  v-model.number="tempReview.rating"
                   placeholder="Rating (1-5)"
                   min="1"
                   max="5"
@@ -42,7 +48,7 @@
                 <label for="reviewContent">Review:</label>
                 <textarea
                   id="reviewContent"
-                  v-model="r.reviewText"
+                  v-model="tempReview.reviewText"
                   placeholder="Enter your review"
                   required
                 ></textarea>
@@ -62,8 +68,8 @@ import ProfileService from "../services/ProfileService";
 export default {
   data() {
     return {
-      showForm: false,
       reviews: [],
+      tempReview: {},
       review: {
         reviewId: null,
         rating: "",
@@ -75,35 +81,50 @@ export default {
     this.fetchData();
   },
   methods: {
+    startEditing(review) {
+      this.tempReview = { ...review };
+      review.showForm = true;
+    },
     selectReview(selectedReview) {
-      this.review = { ...selectedReview }; // Spread operator to copy selected review properties to the editable form
+      this.review = { ...selectedReview }; // Copy properties to the editable form
     },
 
-    toggleForm() {
-      this.showForm = !this.showForm;
+    toggleForm(review) {
+      review.showForm = !review.showForm; // Properly handle reactivity for newly added properties
     },
-    async saveReviewChanges() {
+    saveReviewChanges(originalReview) {
+      const index = this.reviews.findIndex(
+        (r) => r.reviewId === originalReview.reviewId
+      );
+      if (index !== -1) {
+        this.reviews[index] = { ...this.tempReview }; // Update the reviews array
+        originalReview.showForm = false; // Hide the form
+        this.updateReview(this.tempReview); // Update the backend
+      }
+    },
+    async updateReview(review) {
       try {
-        await ProfileService.updateReview(this.review.reviewId, this.review);
-        this.toggleForm();
+        await ProfileService.updateReview(review.reviewId, review);
         // alert("Review updated successfully!");
       } catch (error) {
         console.error("Failed to update review:", error);
         alert("Failed to update review.");
       }
     },
+    async deleteReview(review){
+        await ProfileService.deleteReview(review.reviewId)
+         this.reviews = this.reviews.filter(r => r.reviewId !== review.reviewId) 
+    },
     async fetchData() {
       try {
         const reviewsResponse = await ProfileService.getUserReviews();
-        this.reviews = reviewsResponse.data;
+        this.reviews = reviewsResponse.data.map((review) => ({
+          ...review,
+          showForm: false,
+        })); // Initialize showForm for each review
       } catch (error) {
         console.error("There was an error fetching the review data:", error);
       }
-    },
-    resetReviewForm() {
-      // Resetting only the editable fields to empty
-      this.review.rating = 1;
-      this.review.reviewText = "";
     },
   },
 };
@@ -236,7 +257,7 @@ form {
   border: 1px solid transparent;
   padding: 8px;
   border-radius: 5px;
-  box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.7);
+  box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.7);
   transition: background-color 300ms;
   cursor: pointer;
 }

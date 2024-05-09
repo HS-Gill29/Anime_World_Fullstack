@@ -18,4 +18,7 @@ export default {
       updateReview(reviewId, review) {
         return axios.put(`/review/${reviewId}`, review);
       },
+      deleteReview(reviewId){
+        return axios.delete(`/review/${reviewId}`)
+      }
 }

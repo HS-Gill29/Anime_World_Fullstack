@@ -15,12 +15,13 @@
       </form>
     </header>
     <main>
-      <div v-if="showAnimeList">
+      <LoadingPage :visible="isLoading" />
+      <div v-if="showAnimeList && !isLoading">
         <div class="cards">
           <AnimeCard v-for="anime in animeList" :key="anime.mal_id" :type="TV" :anime="anime" />
         </div>
       </div>
-      <div v-else>
+      <div v-else-if="!isLoading">
         <HomePage/>
       </div>
     </main>
@@ -31,24 +32,35 @@
 import { ref } from "vue";
 import AnimeCard from "../components/AnimeCard.vue";
 import HomePage from "../components/HomePage.vue";
+import LoadingPage from "../components/LoadingPage.vue";
 
 export default {
   components: {
     AnimeCard,
     HomePage,
+    LoadingPage,
   },
   setup() {
     const search_query = ref("");
     const animeList = ref([]);
     const showAnimeList = ref(false); // Flag to toggle between showing anime list and homepage
+    const isLoading = ref(false);
 
     const handleSearch = async () => {
-      const res = await fetch(`https://api.jikan.moe/v4/anime?q=${search_query.value}`);
+      isLoading.value = true;
+      try{
+        const res = await fetch(`https://api.jikan.moe/v4/anime?q=${search_query.value}`);
       const data = await res.json();
       animeList.value = data.data.filter(anime => anime.episodes > 0 && anime.type === "TV");
       
       // Show anime list only if there are search results
       showAnimeList.value = animeList.value.length > 0;
+      }
+      catch (error) {
+        console.error("Failed to fetch anime:", error);
+      } finally {
+        isLoading.value = false; // End loading
+      }
 
       search_query.value = "";
     };
@@ -57,7 +69,8 @@ export default {
       search_query,
       animeList,
       handleSearch,
-      showAnimeList
+      showAnimeList,
+      isLoading
     };
   },
 };
@@ -66,8 +79,6 @@ export default {
 
 <style>
 .app {
-  min-height: 100vh; 
-  background-color: #e0cdb7;
   background-image: url('/cream-background.jpg');
   background-size: cover;
 }
