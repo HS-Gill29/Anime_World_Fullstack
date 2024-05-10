@@ -1,5 +1,6 @@
 <template>
   <div class="recommended-anime">
+    <LoadingPage v-if="isLoading" :visible="isLoading" />
     <h1>Recommended Anime</h1>
     <div v-if="recommendedAnime.length > 0" class="anime-list">
       <div v-for="(anime, index) in recommendedAnime" :key="index" class="anime-card">
@@ -19,15 +20,21 @@
   </div>
 </template>
 <script>
+import LoadingPage from './LoadingPage.vue';
 export default {
+  components: {
+    LoadingPage
+  },
   data() {
     return {
       recommendedAnime: [],
-      upcomingSeasons: []
+      upcomingSeasons: [],
+      isLoading : false
     };
   },
   async created() {
     try {
+      this.isLoading = true;
       const response = await fetch("https://api.jikan.moe/v4/top/anime");
       const data = await response.json();
 
@@ -40,6 +47,9 @@ export default {
 
     } catch (error) {
       console.error("Error fetching recommended anime:", error);
+    }
+    finally{
+      this.isLoading = false;
     }
   }
 };

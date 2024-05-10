@@ -1,72 +1,62 @@
 <template>
-  <div class="holder">
-    <div class="preloader">
-      <div v-for="n in 10" :key="n"></div>
-      <!-- Vue loop to create divs -->
-    </div>
+  <div v-if="visible" class="loading">
+	<span class="loader"></span>
   </div>
 </template>
 
 <script>
 export default {
-  name: "LoadingPage",
+  name: "isLoading",
   props: {
     visible: Boolean,
   },
 };
 </script>
 
-<style scoped>
-.holder {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #2d2f48;
+<style>
+.loading {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgb(0 0 0 / 90%);
 }
 
-.preloader {
-  width: 100px;
-  height: 100px;
-  position: relative;
-  animation: rotatePreloader 2s linear infinite;
-}
+.loader {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        position: relative;
+        animation: rotate 1s linear infinite
+      }
+      .loader::before , .loader::after {
+        content: "";
+        box-sizing: border-box;
+        position: absolute;
+        inset: 0px;
+        border-radius: 50%;
+        border: 5px solid #FFF;
+        animation: prixClipFix 2s linear infinite ;
+      }
+      .loader::after{
+        transform: rotate3d(90, 90, 0, 180deg );
+        border-color: #FF3D00;
+      }
 
-@keyframes rotatePreloader {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+      @keyframes rotate {
+        0%   {transform: rotate(0deg)}
+        100%   {transform: rotate(360deg)}
+      }
 
-.preloader div {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 15px;
-  height: 15px;
-  background-color: #ffffff;
-  border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  animation: fade 2s infinite;
-  animation-delay: calc(var(--n) * -0.2s);
-}
+      @keyframes prixClipFix {
+          0%   {clip-path:polygon(50% 50%,0 0,0 0,0 0,0 0,0 0)}
+          50%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 0,100% 0,100% 0)}
+          75%, 100%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,100% 100%,100% 100%)}
+      }
 
-@keyframes fade {
-  0%,
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0);
-  }
-  50% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
+
 </style>

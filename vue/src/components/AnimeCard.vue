@@ -5,7 +5,7 @@
         <img :src="anime.images.jpg.large_image_url" :alt="anime.title + ' Poster'" />
       </div>
       <div class="text-container">
-        <h3 class="anime-title">{{ anime.title }}</h3>
+        <h3 class="anime-title">{{ anime.title }}  ({{ anime.title_english }})</h3>
         <p class="anime-info">Duration: <span>{{ anime.duration }}</span></p>
         <p class="anime-info">Episodes: <span>{{ anime.episodes }}</span></p>
         <p class="anime-info">Studio: <a :href="anime.studios[0].url" target="_blank">{{ anime.studios[0].name }}</a></p>
