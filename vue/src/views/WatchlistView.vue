@@ -33,6 +33,14 @@ export default {
   created() {
     this.fetchData();
   },
+  mounted() {
+    // Set the background when the component mounts
+    document.body.style.backgroundImage = "url('/cream-background.jpg')";
+  },
+  beforeUnmount() {
+    // Clear the background when the component is about to be destroyed
+    document.body.style.backgroundImage = '';
+  },
   methods: {
     async fetchData() {
       try {

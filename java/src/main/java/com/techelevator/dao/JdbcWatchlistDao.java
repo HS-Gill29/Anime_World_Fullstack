@@ -2,13 +2,17 @@ package com.techelevator.dao;
 
 import com.techelevator.exception.DaoException;
 import com.techelevator.model.Watchlist;
+import org.apache.logging.log4j.util.Chars;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Component
 public class JdbcWatchlistDao implements WatchlistDao{
     private final JdbcTemplate jdbcTemplate;
@@ -73,5 +77,6 @@ public class JdbcWatchlistDao implements WatchlistDao{
         watchlist.setSynopsis(rs.getString("synopsis"));
         return watchlist;
     }
+
 
 }

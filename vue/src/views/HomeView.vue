@@ -57,6 +57,7 @@ export default {
     LoadingPage,
   },
   setup() {
+    const TV = 'TV';
     const search_query = ref("");
     const animeList = ref([]);
     const showAnimeList = ref(false); // Flag to toggle between showing anime list and homepage
@@ -85,6 +86,7 @@ export default {
     };
 
     return {
+      TV,
       search_query,
       animeList,
       handleSearch,
@@ -145,9 +147,6 @@ header h1:hover {
   border-radius: 8px;
   color: black;
   transition: background-color 0.3s, color 0.3s;
-  /* position: relative;
-  justify-content: center;
-  align-items: center; */
 }
 
 /* Hover and focus effects for the entire search box and its children */
@@ -173,10 +172,6 @@ header h1:hover {
   color: inherit;
   font-size: 24px;
   transition: background-color 0.3s, color 0.3s;
-  /* display: block;
-  width: 100%;
-  max-width: 600px;
-  margin-left: 20px; */
 }
 
 main {
@@ -184,9 +179,5 @@ main {
   margin: 0 auto;
   padding-left: 30px;
   padding-right: 30px;
-}
-.cards {
-  display: flex;
-  flex-wrap: wrap;
 }
 </style>
