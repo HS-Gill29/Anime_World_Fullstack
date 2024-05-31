@@ -2,8 +2,8 @@ package com.techelevator.controller;
 
 import com.techelevator.dao.JdbcUserDao;
 import com.techelevator.dao.JdbcWatchlistDao;
+import com.techelevator.model.Anime;
 import com.techelevator.model.User;
-import com.techelevator.model.Watchlist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -29,15 +29,15 @@ public class WatchlistController {
 
     // Watchlist endpoints
     @PostMapping
-    public void addToWatchlist(@Valid Principal principal, @RequestBody Watchlist watchlist) {
+    public void addToWatchlist(@Valid Principal principal, @RequestBody Anime anime) {
         User user = userDao.getUserByUsername(principal.getName());
-            watchlistDao.addToWatchlist(watchlist,user.getId());
+            watchlistDao.addToWatchlist(anime,user.getId());
     }
 
     @GetMapping
-    public List<Watchlist> getWatchlist(@Valid Principal principal) {
+    public List<Anime> getWatchlist(@Valid Principal principal) {
         User user = userDao.getUserByUsername(principal.getName());
-       return watchlistDao.getWatchlistByUserId(user.getId());
+       return watchlistDao.getAnimeByUserId(user.getId());
     }
 
     @DeleteMapping("/{watchlistId}")

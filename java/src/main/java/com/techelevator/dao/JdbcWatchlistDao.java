@@ -1,37 +1,48 @@
 package com.techelevator.dao;
 
 import com.techelevator.exception.DaoException;
+import com.techelevator.model.Anime;
 import com.techelevator.model.Watchlist;
-import org.apache.logging.log4j.util.Chars;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
+
 
 @Component
-public class JdbcWatchlistDao implements WatchlistDao{
+public class JdbcWatchlistDao implements WatchlistDao {
     private final JdbcTemplate jdbcTemplate;
+    private final JdbcAnimeDao animeDao;
 
-    public JdbcWatchlistDao(JdbcTemplate jdbcTemplate) {
+    public JdbcWatchlistDao(JdbcTemplate jdbcTemplate, JdbcAnimeDao animeDao) {
         this.jdbcTemplate = jdbcTemplate;
+        this.animeDao = animeDao;
     }
 
     @Override
-    public void addToWatchlist(Watchlist watchlist, int userId) {
-        String sql = "INSERT INTO watchlist (user_id, anime_title, img_url, duration, episodes, studio_name, " +
-                "studio_url, genres, background, synopsis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void addToWatchlist(Anime anime, int userId) {
+        String sql = "INSERT INTO watchlist (user_id, anime_id) VALUES (?, ?)";
+
+        String animeSql = "INSERT INTO anime (title, img_url, duration, episodes," +
+                "studio_name, studio_url, genres, background, synopsis)" +
+                "VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+
+        boolean animeExists = animeDao.animeExists(anime);
+
         try {
-            if(userId != 0) {
-                jdbcTemplate.update(sql, userId, watchlist.getAnimeTitle(), watchlist.getImgUrl(),
-                        watchlist.getDuration(), watchlist.getEpisodes(), watchlist.getStudioName(),
-                        watchlist.getStudioUrl(), watchlist.getGenres(), watchlist.getBackground(),
-                        watchlist.getSynopsis());
+            if (!animeExists) {
+                jdbcTemplate.update(animeSql, anime.getTitle(), anime.getImgUrl(), anime.getDuration(),
+                        anime.getEpisodes(), anime.getStudioName(), anime.getStudioUrl(), anime.getGenres(),
+                        anime.getBackground(), anime.getSynopsis());
             }
+            int animeId = animeDao.getAnimeId(anime.getTitle());
+
+            jdbcTemplate.update(sql, userId, animeId);
+
         } catch (DataAccessException e) {
             throw new DaoException("Unable to add to watchlist: " + e.getMessage(), e);
         }
@@ -49,32 +60,42 @@ public class JdbcWatchlistDao implements WatchlistDao{
     }
 
     @Override
-    public List<Watchlist> getWatchlistByUserId(int userId) {
-        List<Watchlist> watchlist = new ArrayList<>();
-        String sql = "SELECT * FROM watchlist WHERE user_id = ?";
+    public List<Anime> getAnimeByUserId(int userId) {
+        List<Anime> animeList = new ArrayList<>();
+        String sql = "SELECT a.* FROM anime a " +
+                "JOIN watchlist w ON a.anime_id = w.anime_id " +
+                "WHERE w.user_id = ?";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
             while (results.next()) {
-                watchlist.add(mapRowToWatchlist(results));
+                Anime anime = mapRowToAnime(results);
+                animeList.add(anime);
             }
         } catch (DataAccessException e) {
-            throw new DaoException("Unable to retrieve watchlist: " + e.getMessage(), e);
+            throw new DaoException("Unable to retrieve anime list for user ID: " + userId, e);
         }
-        return watchlist;
+        return animeList;
     }
+
+    private Anime mapRowToAnime(SqlRowSet rs) {
+        Anime anime = new Anime();
+        anime.setAnimeId(rs.getInt("anime_id"));
+        anime.setTitle(rs.getString("title"));
+        anime.setImgUrl(rs.getString("img_url"));
+        anime.setDuration(rs.getString("duration"));
+        anime.setEpisodes(rs.getInt("episodes"));
+        anime.setStudioName(rs.getString("studio_name"));
+        anime.setStudioUrl(rs.getString("studio_url"));
+        anime.setGenres(rs.getString("genres"));
+        anime.setBackground(rs.getString("background"));
+        anime.setSynopsis(rs.getString("synopsis"));
+        return anime;
+    }
+
     private Watchlist mapRowToWatchlist(SqlRowSet rs) {
         Watchlist watchlist = new Watchlist();
         watchlist.setWatchlistId(rs.getInt("watchlist_id"));
         watchlist.setUserId(rs.getInt("user_id"));
-        watchlist.setAnimeTitle(rs.getString("anime_title"));
-        watchlist.setImgUrl(rs.getString("img_url"));
-        watchlist.setDuration(rs.getString("duration"));
-        watchlist.setEpisodes(rs.getInt("episodes"));
-        watchlist.setStudioName(rs.getString("studio_name"));
-        watchlist.setStudioUrl(rs.getString("studio_url"));
-        watchlist.setGenres(rs.getString("genres"));
-        watchlist.setBackground(rs.getString("background"));
-        watchlist.setSynopsis(rs.getString("synopsis"));
         return watchlist;
     }
 

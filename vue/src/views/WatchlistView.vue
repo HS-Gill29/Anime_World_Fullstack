@@ -7,7 +7,7 @@
             <img :src="watchlist.imgUrl" alt="Anime image" class="anime-img">
           </div>
           <div class="watchlist-content">
-            <h4>{{ watchlist.animeTitle }}</h4>
+            <h4>{{ watchlist.title }}</h4>
             <p><strong>Duration:</strong> {{ watchlist.duration }}</p>
             <p><strong>Episodes:</strong> {{ watchlist.episodes }}</p>
             <p><strong>Studio:</strong> <a :href="watchlist.studioUrl" target="_blank">{{ watchlist.studioName }}</a></p>

@@ -13,10 +13,9 @@ CREATE TABLE users (
 	CONSTRAINT PK_user PRIMARY KEY (user_id)
 );
 
-CREATE TABLE watchlist (
-    watchlist_id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
-    anime_title VARCHAR(255) NOT NULL,
+CREATE TABLE anime (
+    anime_id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL UNIQUE,
     img_url VARCHAR(300),
     duration VARCHAR(255),
     episodes INT,
@@ -24,28 +23,26 @@ CREATE TABLE watchlist (
     studio_url VARCHAR(300),
     genres TEXT,
     background TEXT,
-    synopsis TEXT,
-    UNIQUE (user_id, anime_title),  -- Ensuring a user cannot add the same anime multiple times
-    CONSTRAINT FK_watchlist_user FOREIGN KEY (user_id) REFERENCES users(user_id)
+    synopsis TEXT
 );
 
+CREATE TABLE watchlist (
+    watchlist_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    anime_id INT NOT NULL,
+    UNIQUE (user_id, anime_id), -- Ensuring a user cannot add the same anime multiple times to their watchlist
+    CONSTRAINT FK_watchlist_user FOREIGN KEY (user_id) REFERENCES users(user_id),
+    CONSTRAINT FK_watchlist_anime FOREIGN KEY (anime_id) REFERENCES anime(anime_id)
+);
 
 CREATE TABLE review (
     review_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
-    anime_title VARCHAR(255) NOT NULL,
-    img_url VARCHAR(300),
+    anime_id INT NOT NULL,
     rating INT CHECK (rating >= 1 AND rating <= 5),
     review_text TEXT,
-    duration VARCHAR(255),
-    episodes INT,
-    studio_name VARCHAR(255),
-    studio_url VARCHAR(300),
-    genres TEXT,
-    background TEXT,
-    synopsis TEXT,
-     UNIQUE (user_id, anime_title),
-    CONSTRAINT FK_reviews_user FOREIGN KEY (user_id) REFERENCES users(user_id)
+    CONSTRAINT FK_review_user FOREIGN KEY (user_id) REFERENCES users(user_id),
+    CONSTRAINT FK_review_anime FOREIGN KEY (anime_id) REFERENCES anime(anime_id)
 );
 
 

@@ -60,7 +60,7 @@
           <div class="button">
             <button type="submit" class="submit-btn">Submit Review</button>
             <button type="button" class="watchlist-btn" @click="addWatchlist">
-             Add to Watchlist
+              Add to Watchlist
             </button>
           </div>
         </form>
@@ -72,7 +72,6 @@
 <script>
 import ProfileService from "../services/ProfileService";
 import { mapState } from "vuex";
-
 
 export default {
   props: ["anime"],
@@ -116,9 +115,9 @@ export default {
       }
     },
     async addWatchlist() {
-      const watchlist = {
+      const anime = {
         userId: this.userId,
-        animeTitle: this.anime.title,
+        title: this.anime.title,
         imgUrl: this.anime.images.jpg.large_image_url,
         duration: this.anime.duration,
         episodes: this.anime.episodes,
@@ -129,7 +128,7 @@ export default {
         synopsis: this.anime.synopsis,
       };
       try {
-        await ProfileService.addToWatchlist(watchlist);
+        await ProfileService.addToWatchlist(anime);
         alert("Added To Watchlist");
       } catch (error) {
         console.log("Failed to add review", error);
@@ -152,7 +151,6 @@ export default {
   cursor: context-menu;
 }
 
-
 .card-content {
   padding: 20px;
   display: flex;
@@ -170,7 +168,6 @@ export default {
 .text-container {
   flex: 1; /* Take up remaining space */
 }
-
 
 .anime-title {
   color: #eda553;
@@ -200,6 +197,7 @@ export default {
 }
 
 .toggle-synopsis {
+  display: contents;
   color: #eda553;
   cursor: pointer;
 }

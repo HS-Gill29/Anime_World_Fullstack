@@ -9,8 +9,8 @@ export default {
       saveReview(review) {
         return axios.post(`/review`,review);
       },
-      addToWatchlist(watchlist){
-        return axios.post('/watchlist',watchlist);
+      addToWatchlist(anime){
+        return axios.post('/watchlist',anime);
       },
       removeFromWatchlist(watchlistId) {
         return axios.delete(`/watchlist/${watchlistId}`)

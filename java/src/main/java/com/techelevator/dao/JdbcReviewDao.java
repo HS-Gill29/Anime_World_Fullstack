@@ -1,6 +1,8 @@
 package com.techelevator.dao;
 
+import com.techelevator.dto.AnimeReviewDto;
 import com.techelevator.exception.DaoException;
+import com.techelevator.model.Anime;
 import com.techelevator.model.Review;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -8,29 +10,43 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 @Component
 public class JdbcReviewDao implements ReviewDao {
     private final JdbcTemplate jdbcTemplate;
+    private final JdbcAnimeDao animeDao;
 
-    public JdbcReviewDao(JdbcTemplate jdbcTemplate) {
+    public JdbcReviewDao(JdbcTemplate jdbcTemplate, JdbcAnimeDao animeDao) {
         this.jdbcTemplate = jdbcTemplate;
+        this.animeDao = animeDao;
     }
 
     @Override
-    public void save(Review review, int userId) {
-        String sql = "INSERT INTO review (user_id, anime_title, rating, review_text, img_url, duration, " +
-                "episodes, studio_name, studio_url, genres, background, synopsis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void save(AnimeReviewDto animeReview, int userId) {
+        Anime anime = animeReview.getAnime();
+        Review review = animeReview.getReview();
+
+        String sql = "INSERT INTO review (user_id, anime_id, rating, review_text) VALUES (?, ?, ?, ?)";
+
+        String animeSql = "INSERT INTO anime (title, img_url, duration, episodes," +
+                "studio_name, studio_url, genres, background, synopsis)" +
+                "VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
-            if(userId != 0) {
-                jdbcTemplate.update(sql, userId, review.getAnimeTitle(), review.getRating(),
-                        review.getReviewText(), review.getImgUrl(), review.getDuration(),
-                        review.getEpisodes(), review.getStudioName(), review.getStudioUrl(),
-                        review.getGenres(), review.getBackground(), review.getSynopsis());
+            boolean animeExists = animeDao.animeExists(anime);
+
+            if (!animeExists) {
+
+                jdbcTemplate.update(animeSql, anime.getTitle(), anime.getImgUrl(), anime.getDuration(),
+                        anime.getEpisodes(), anime.getStudioName(), anime.getStudioUrl(), anime.getGenres(),
+                        anime.getBackground(), anime.getSynopsis());
             }
+
+            int animeId = animeDao.getAnimeId(anime.getTitle());
+
+            jdbcTemplate.update(sql, userId, animeId, review.getRating(), review.getReviewText());
+
         } catch (DataAccessException e) {
             throw new DaoException("Failed to save review: " + e.getMessage(), e);
         }
@@ -77,17 +93,7 @@ public class JdbcReviewDao implements ReviewDao {
         Review review = new Review();
         review.setReviewId(rs.getInt("review_id"));
         review.setUserId(rs.getInt("user_id"));
-        review.setAnimeTitle(rs.getString("anime_title"));
-        review.setRating(rs.getInt("rating"));
-        review.setReviewText(rs.getString("review_text"));
-        review.setImgUrl(rs.getString("img_url"));
-        review.setDuration(rs.getString("duration"));
-        review.setEpisodes(rs.getInt("episodes"));
-        review.setStudioName(rs.getString("studio_name"));
-        review.setStudioUrl(rs.getString("studio_url"));
-        review.setGenres(rs.getString("genres"));
-        review.setBackground(rs.getString("background"));
-        review.setSynopsis(rs.getString("synopsis"));
+        ;
         return review;
     }
 

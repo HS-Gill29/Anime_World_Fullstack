@@ -2,6 +2,7 @@ package com.techelevator.controller;
 
 import com.techelevator.dao.JdbcReviewDao;
 import com.techelevator.dao.JdbcUserDao;
+import com.techelevator.dto.AnimeReviewDto;
 import com.techelevator.model.Review;
 import com.techelevator.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +38,9 @@ public class ReviewController {
 
     // Save or update a review
     @PostMapping
-    public void save(Principal principal, @RequestBody Review review) {
+    public void save(Principal principal, @RequestBody AnimeReviewDto animeReview) {
         User user = userDao.getUserByUsername(principal.getName());
-       reviewDao.save(review,user.getId());
+       reviewDao.save(animeReview,user.getId());
     }
 
     // Update a review
