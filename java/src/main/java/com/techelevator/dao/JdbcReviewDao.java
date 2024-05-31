@@ -54,19 +54,31 @@ public class JdbcReviewDao implements ReviewDao {
 
 
     @Override
-    public List<Review> getReview(int userId) {
-        List<Review> reviews = new ArrayList<>();
-        String sql = "select * from review where user_id = ?;";
+    public List<AnimeReviewDto> getReview(int userId) {
+        List<AnimeReviewDto> animeReviews = new ArrayList<>();
+        String sql = "SELECT r.*, a.* " +
+                "FROM review r  JOIN anime a ON r.anime_id = a.anime_id " +
+                "WHERE r.user_id = ?";
+
         try {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql,userId);
-            while (results.next()){
-                reviews.add(mapRowToReview(results));
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+            while (results.next()) {
+                Review review = mapRowToReview(results);
+                Anime anime = mapRowToAnime(results);
+
+                AnimeReviewDto animeReviewDto = new AnimeReviewDto();
+
+                animeReviewDto.setReview(review);
+                animeReviewDto.setAnime(anime);
+
+                animeReviews.add(animeReviewDto);
             }
 
-        } catch (DataIntegrityViolationException e){
-            throw new DaoException(e.getMessage());
+        } catch (DataAccessException e) {
+            throw new DaoException("Failed to retrieve reviews: " + e.getMessage(), e);
         }
-        return reviews;
+
+        return animeReviews;
     }
 
     @Override
@@ -93,8 +105,24 @@ public class JdbcReviewDao implements ReviewDao {
         Review review = new Review();
         review.setReviewId(rs.getInt("review_id"));
         review.setUserId(rs.getInt("user_id"));
-        ;
+        review.setAnimeId(rs.getInt("anime_id"));
+        review.setRating(rs.getInt("rating"));
+        review.setReviewText(rs.getString("review_text"));
         return review;
+    }
+
+    private Anime mapRowToAnime(SqlRowSet rs) {
+        Anime anime = new Anime();
+        anime.setTitle(rs.getString("title"));
+        anime.setImgUrl(rs.getString("img_url"));
+        anime.setDuration(rs.getString("duration"));
+        anime.setEpisodes(rs.getInt("episodes"));
+        anime.setStudioName(rs.getString("studio_name"));
+        anime.setStudioUrl(rs.getString("studio_url"));
+        anime.setGenres(rs.getString("genres"));
+        anime.setBackground(rs.getString("background"));
+        anime.setSynopsis(rs.getString("synopsis"));
+        return anime;
     }
 
 }

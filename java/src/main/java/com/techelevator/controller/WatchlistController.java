@@ -2,6 +2,7 @@ package com.techelevator.controller;
 
 import com.techelevator.dao.JdbcUserDao;
 import com.techelevator.dao.JdbcWatchlistDao;
+import com.techelevator.dto.AnimeWatchlistDto;
 import com.techelevator.model.Anime;
 import com.techelevator.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class WatchlistController {
     }
 
     @GetMapping
-    public List<Anime> getWatchlist(@Valid Principal principal) {
+    public List<AnimeWatchlistDto> getWatchlist(@Valid Principal principal) {
         User user = userDao.getUserByUsername(principal.getName());
        return watchlistDao.getAnimeByUserId(user.getId());
     }

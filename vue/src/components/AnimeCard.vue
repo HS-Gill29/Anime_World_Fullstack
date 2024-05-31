@@ -91,18 +91,21 @@ export default {
     },
     async submitReview() {
       const review = {
-        userId: this.userId, // From Vuex or auth state
-        animeTitle: this.anime.title,
-        rating: this.reviewRating,
-        reviewText: this.reviewText,
-        imgUrl: this.anime.images.jpg.large_image_url,
-        duration: this.anime.duration,
-        episodes: this.anime.episodes,
-        studioName: this.anime.studios[0]?.name,
-        studioUrl: this.anime.studios[0]?.url,
-        genres: this.anime.genres.map((genre) => genre.name).join(", "),
-        background: this.anime.background,
-        synopsis: this.anime.synopsis,
+        anime: {
+          title: this.anime.title,
+          imgUrl: this.anime.images.jpg.large_image_url,
+          duration: this.anime.duration,
+          episodes: this.anime.episodes,
+          studioName: this.anime.studios[0]?.name,
+          studioUrl: this.anime.studios[0]?.url,
+          genres: this.anime.genres.map((genre) => genre.name).join(", "),
+          background: this.anime.background,
+          synopsis: this.anime.synopsis,
+        },
+        review: {
+          rating: this.reviewRating,
+          reviewText: this.reviewText,
+        }
       };
       try {
         await ProfileService.saveReview(review);
@@ -132,7 +135,6 @@ export default {
         alert("Added To Watchlist");
       } catch (error) {
         console.log("Failed to add review", error);
-        console.log(this.anime.images.jpg.large_image_url);
         alert("Failed to add watchlist.");
       }
     },

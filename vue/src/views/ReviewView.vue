@@ -2,36 +2,28 @@
   <div class="reviews-container">
     <h3 class="reviews-title">Reviews for Selected Anime:</h3>
     <ul class="review-list">
-      <li v-for="review in reviews" :key="review.reviewId" class="review-item">
+      <li v-for="animeReview in animeReviews" :key="animeReview.review.reviewId" class="review-item">
         <div class="image-container">
-          <img :src="review.imgUrl" alt="Anime image" class="anime-img" />
+          <img :src="animeReview.anime.imgUrl" alt="Anime image" class="anime-img" />
         </div>
         <div class="review-content">
-          <h4>{{ review.animeTitle }}</h4>
-          <p><strong>Rating:</strong> {{ review.rating }} Stars</p>
-          <p><strong>Review:</strong> {{ review.reviewText }}</p>
-          <p><strong>Duration:</strong> {{ review.duration }}</p>
-          <p><strong>Episodes:</strong> {{ review.episodes }}</p>
+          <h4>{{ animeReview.anime.title }}</h4>
+          <p><strong>Rating:</strong> {{ animeReview.review.rating }} Stars</p>
+          <p><strong>Review:</strong> {{ animeReview.review.reviewText }}</p>
+          <p><strong>Duration:</strong> {{ animeReview.anime.duration }}</p>
+          <p><strong>Episodes:</strong> {{ animeReview.anime.episodes }}</p>
           <p>
             <strong>Studio:</strong>
-            <a :href="review.studioUrl" target="_blank">{{
-              review.studioName
-            }}</a>
+            <a :href="animeReview.anime.studioUrl" target="_blank">{{ animeReview.anime.studioName }}</a>
           </p>
-          <p><strong>Genres:</strong> {{ review.genres }}</p>
-          <p><strong>Background:</strong> {{ review.background }}</p>
-          <button @click="deleteReview(review)">Delete Review</button>
+          <p><strong>Genres:</strong> {{ animeReview.anime.genres }}</p>
+          <p><strong>Background:</strong> {{ animeReview.anime.background }}</p>
+          <button @click="deleteReview(animeReview.review.reviewId)">Delete Review</button>
           <div class="review-edit-container">
-            <button
-              class="edit-review-button"
-              @click.stop="startEditing(review)"
-            >
+            <button class="edit-review-button" @click.stop="startEditing(animeReview.review)">
               Edit Review
             </button>
-            <form
-              v-if="review.showForm"
-              @submit.prevent="saveReviewChanges(review)"
-            >
+            <form v-if="animeReview.review.showForm" @submit.prevent="saveReviewChanges(animeReview.review)">
               <div class="form-group">
                 <label for="reviewRating">Rating:</label>
                 <input
@@ -62,30 +54,24 @@
   </div>
 </template>
 
+
 <script>
 import ProfileService from "../services/ProfileService";
 
 export default {
   data() {
     return {
-      reviews: [],
+      animeReviews: [],
       tempReview: {},
-      review: {
-        reviewId: null,
-        rating: "",
-        reviewText: "",
-      },
     };
   },
   created() {
     this.fetchData();
   },
   mounted() {
-    // Set the background when the component mounts
     document.body.style.backgroundImage = "url('/cream-background.jpg')";
   },
   beforeUnmount() {
-    // Clear the background when the component is about to be destroyed
     document.body.style.backgroundImage = '';
   },
   methods: {
@@ -93,43 +79,43 @@ export default {
       this.tempReview = { ...review };
       review.showForm = true;
     },
-    selectReview(selectedReview) {
-      this.review = { ...selectedReview }; // Copy properties to the editable form
-    },
-
     toggleForm(review) {
-      review.showForm = !review.showForm; // Properly handle reactivity for newly added properties
+      review.showForm = !review.showForm;
     },
-    saveReviewChanges(originalReview) {
-      const index = this.reviews.findIndex(
-        (r) => r.reviewId === originalReview.reviewId
+    async saveReviewChanges(originalReview) {
+      const index = this.animeReviews.findIndex(
+        (ar) => ar.review.reviewId === originalReview.reviewId
       );
       if (index !== -1) {
-        this.reviews[index] = { ...this.tempReview }; // Update the reviews array
-        originalReview.showForm = false; // Hide the form
-        this.updateReview(this.tempReview); // Update the backend
+        this.animeReviews[index].review = { ...this.tempReview };
+        originalReview.showForm = false;
+        await this.updateReview(this.tempReview);
       }
     },
     async updateReview(review) {
       try {
         await ProfileService.updateReview(review.reviewId, review);
-        // alert("Review updated successfully!");
       } catch (error) {
         console.error("Failed to update review:", error);
         alert("Failed to update review.");
       }
     },
-    async deleteReview(review){
-        await ProfileService.deleteReview(review.reviewId)
-         this.reviews = this.reviews.filter(r => r.reviewId !== review.reviewId) 
+    async deleteReview(reviewId) {
+      try {
+        await ProfileService.deleteReview(reviewId);
+        this.animeReviews = this.animeReviews.filter(ar => ar.review.reviewId !== reviewId);
+      } catch (error) {
+        console.error("Failed to delete review:", error);
+        alert("Failed to delete review.");
+      }
     },
     async fetchData() {
       try {
-        const reviewsResponse = await ProfileService.getUserReviews();
-        this.reviews = reviewsResponse.data.map((review) => ({
-          ...review,
-          showForm: false,
-        })); // Initialize showForm for each review
+        const response = await ProfileService.getUserReviews();
+        this.animeReviews = response.data.map((animeReview) => ({
+          ...animeReview,
+          review: { ...animeReview.review, showForm: false },
+        }));
       } catch (error) {
         console.error("There was an error fetching the review data:", error);
       }
@@ -137,6 +123,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .reviews-container {

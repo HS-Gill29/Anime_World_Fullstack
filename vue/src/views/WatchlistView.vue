@@ -2,18 +2,18 @@
     <div class="watchlist-container">
       <h3 class="watchlist-title">My Watchlist:</h3>
       <ul class="watchlist">
-        <li v-for="watchlist in watchlists" :key="watchlist.watchlistId" class="watchlist-item">
+        <li v-for="watchlist in watchlists" :key="watchlist.watchlist.watchlistId" class="watchlist-item">
           <div class="media">
-            <img :src="watchlist.imgUrl" alt="Anime image" class="anime-img">
+            <img :src="watchlist.anime.imgUrl" alt="Anime image" class="anime-img">
           </div>
           <div class="watchlist-content">
-            <h4>{{ watchlist.title }}</h4>
-            <p><strong>Duration:</strong> {{ watchlist.duration }}</p>
-            <p><strong>Episodes:</strong> {{ watchlist.episodes }}</p>
-            <p><strong>Studio:</strong> <a :href="watchlist.studioUrl" target="_blank">{{ watchlist.studioName }}</a></p>
-            <p><strong>Genres:</strong> {{ watchlist.genres }}</p>
-            <p><strong>Background:</strong> {{ watchlist.background }}</p>
-            <button class="delete-btn" @click="deleteFromWatchlist(watchlist.watchlistId)">Remove</button>
+            <h4>{{ watchlist.anime.title }}</h4>
+            <p><strong>Duration:</strong> {{ watchlist.anime.duration }}</p>
+            <p><strong>Episodes:</strong> {{ watchlist.anime.episodes }}</p>
+            <p><strong>Studio:</strong> <a :href="watchlist.anime.studioUrl" target="_blank">{{ watchlist.anime.studioName }}</a></p>
+            <p><strong>Genres:</strong> {{ watchlist.anime.genres }}</p>
+            <p><strong>Background:</strong> {{ watchlist.anime.background }}</p>
+            <button class="delete-btn" @click="deleteFromWatchlist(watchlist.watchlist.watchlistId)">Remove</button>
           </div>
         </li>
       </ul>
@@ -45,7 +45,7 @@ export default {
     async fetchData() {
       try {
         const watchlistsResponse = await ProfileService.getUserWatchlist();
-        
+        console.log(watchlistsResponse);
         this.watchlists = watchlistsResponse.data
       } catch (error) {
         console.error('There was an error fetching the watchlist data:', error);
@@ -54,7 +54,7 @@ export default {
     async deleteFromWatchlist(watchlistId) {
       try {
         await ProfileService.removeFromWatchlist(watchlistId);
-        this.watchlists = this.watchlists.filter(watchlist => watchlist.watchlistId !== watchlistId);
+        this.watchlists = this.watchlists.filter(watchlist => watchlist.watchlist.watchlistId !== watchlistId);
         alert('Item removed successfully!');
       } catch (error) {
         console.error('Failed to remove from watchlist:', error);

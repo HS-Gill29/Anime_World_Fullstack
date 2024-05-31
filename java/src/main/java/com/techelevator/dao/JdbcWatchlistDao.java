@@ -1,7 +1,9 @@
 package com.techelevator.dao;
 
+import com.techelevator.dto.AnimeWatchlistDto;
 import com.techelevator.exception.DaoException;
 import com.techelevator.model.Anime;
+import com.techelevator.model.Review;
 import com.techelevator.model.Watchlist;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -60,16 +62,25 @@ public class JdbcWatchlistDao implements WatchlistDao {
     }
 
     @Override
-    public List<Anime> getAnimeByUserId(int userId) {
-        List<Anime> animeList = new ArrayList<>();
-        String sql = "SELECT a.* FROM anime a " +
+    public List<AnimeWatchlistDto> getAnimeByUserId(int userId) {
+        List<AnimeWatchlistDto> animeList = new ArrayList<>();
+        String sql = "SELECT a.*, w.watchlist_id FROM anime a " +
                 "JOIN watchlist w ON a.anime_id = w.anime_id " +
                 "WHERE w.user_id = ?";
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
             while (results.next()) {
                 Anime anime = mapRowToAnime(results);
-                animeList.add(anime);
+                Watchlist watchlist = new Watchlist();
+                watchlist.setWatchlistId(results.getInt("watchlist_id"));
+//                watchlist.setUserId(results.getInt("user_id"));
+//                watchlist.setAnimeId(results.getInt("anime_id"));
+
+                AnimeWatchlistDto animeWatchlistDto = new AnimeWatchlistDto();
+                animeWatchlistDto.setAnime(anime);
+                animeWatchlistDto.setWatchlist(watchlist);
+
+                animeList.add(animeWatchlistDto);
             }
         } catch (DataAccessException e) {
             throw new DaoException("Unable to retrieve anime list for user ID: " + userId, e);
@@ -91,13 +102,5 @@ public class JdbcWatchlistDao implements WatchlistDao {
         anime.setSynopsis(rs.getString("synopsis"));
         return anime;
     }
-
-    private Watchlist mapRowToWatchlist(SqlRowSet rs) {
-        Watchlist watchlist = new Watchlist();
-        watchlist.setWatchlistId(rs.getInt("watchlist_id"));
-        watchlist.setUserId(rs.getInt("user_id"));
-        return watchlist;
-    }
-
 
 }

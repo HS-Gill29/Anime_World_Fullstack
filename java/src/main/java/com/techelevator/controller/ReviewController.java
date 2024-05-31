@@ -32,8 +32,9 @@ public class ReviewController {
 
     // Get all reviews for a specific anime
     @GetMapping
-    public List<Review> getReview(Principal principal) {
-       return reviewDao.getReview(userDao.getUserByUsername(principal.getName()).getId());
+    public List<AnimeReviewDto> getReview(Principal principal) {
+        User user = userDao.getUserByUsername(principal.getName());
+       return reviewDao.getReview(user.getId());
     }
 
     // Save or update a review
