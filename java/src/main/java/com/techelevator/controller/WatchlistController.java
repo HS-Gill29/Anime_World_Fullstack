@@ -1,5 +1,6 @@
 package com.techelevator.controller;
 
+import com.techelevator.dao.JdbcAnimeDao;
 import com.techelevator.dao.JdbcUserDao;
 import com.techelevator.dao.JdbcWatchlistDao;
 import com.techelevator.dto.AnimeWatchlistDto;
@@ -22,10 +23,13 @@ public class WatchlistController {
     private final JdbcUserDao userDao;
     private final JdbcWatchlistDao watchlistDao;
 
+    private final JdbcAnimeDao animeDao;
+
     @Autowired
-    public WatchlistController(JdbcUserDao userDao, JdbcWatchlistDao watchlistDao) {
+    public WatchlistController(JdbcUserDao userDao, JdbcWatchlistDao watchlistDao, JdbcAnimeDao animeDao) {
         this.userDao = userDao;
         this.watchlistDao = watchlistDao;
+        this.animeDao = animeDao;
     }
 
     // Watchlist endpoints
@@ -39,6 +43,10 @@ public class WatchlistController {
     public List<AnimeWatchlistDto> getWatchlist(@Valid Principal principal) {
         User user = userDao.getUserByUsername(principal.getName());
        return watchlistDao.getAnimeByUserId(user.getId());
+    }
+    @GetMapping("/exists")
+    public boolean animeExists(@RequestParam String title){
+        return animeDao.animeExists(title);
     }
 
     @DeleteMapping("/{watchlistId}")

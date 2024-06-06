@@ -2,6 +2,9 @@ import { createApp } from 'vue'
 import CapstoneApp from './App.vue'
 import { createStore } from './store'
 import router from './router'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios'
 
 /* sets the base url for server API communication with axios */
@@ -32,7 +35,10 @@ if (currentToken) {
 // Create the Vuex store passing in the stored credentials
 const store = createStore(currentToken, currentUser);
 
+library.add(fas);
+
 const app = createApp(CapstoneApp);
+app.component('font-awesome-icon', FontAwesomeIcon);
 app.use(store);
 app.use(router);
 app.mount('#app');

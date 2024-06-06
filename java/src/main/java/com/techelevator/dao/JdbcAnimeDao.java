@@ -16,11 +16,10 @@ public class JdbcAnimeDao implements AnimeDao{
     }
 
     @Override
-    public boolean animeExists(Anime anime) {
+    public boolean animeExists(String title) {
         String sql = "SELECT COUNT(*) FROM anime WHERE title = ?";
         try {
-            int count = jdbcTemplate.queryForObject(sql, Integer.class, anime.getTitle());
-
+            int count = jdbcTemplate.queryForObject(sql, Integer.class, title);
             return count > 0;
         } catch (DataAccessException e) {
             throw new DaoException(e.getMessage(), e);

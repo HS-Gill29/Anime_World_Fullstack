@@ -45,7 +45,6 @@ export default {
     async fetchData() {
       try {
         const watchlistsResponse = await ProfileService.getUserWatchlist();
-        console.log(watchlistsResponse);
         this.watchlists = watchlistsResponse.data
       } catch (error) {
         console.error('There was an error fetching the watchlist data:', error);
@@ -136,16 +135,15 @@ export default {
 
 .delete-btn {
   padding: 6px 12px;
-  background-color: #dc3545; /* Bootstrap danger color */
+  background-color: #dc3545; 
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
 .delete-btn:hover {
-  background-color: #c82333; /* Slightly darker */
+  background-color: #c82333; 
 }
 </style>
 

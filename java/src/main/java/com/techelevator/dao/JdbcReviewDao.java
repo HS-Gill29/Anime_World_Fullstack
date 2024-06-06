@@ -34,7 +34,7 @@ public class JdbcReviewDao implements ReviewDao {
                 "VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
-            boolean animeExists = animeDao.animeExists(anime);
+            boolean animeExists = animeDao.animeExists(anime.getTitle());
 
             if (!animeExists) {
 

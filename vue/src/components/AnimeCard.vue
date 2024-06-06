@@ -110,7 +110,7 @@ export default {
       try {
         await ProfileService.saveReview(review);
         alert("Review submitted successfully!");
-        this.reviewText = ""; // Reset form
+        this.reviewText = ""; 
         this.reviewRating = "";
       } catch (error) {
         console.error("Failed to submit review:", error);
@@ -134,8 +134,13 @@ export default {
         await ProfileService.addToWatchlist(anime);
         alert("Added To Watchlist");
       } catch (error) {
-        console.log("Failed to add review", error);
-        alert("Failed to add watchlist.");
+        if (error.response && error.response.data && error.response.data.message === "Anime already exists in watchlist") {
+            alert("This anime is already in your watchlist.");
+        }
+        else {
+            console.error("Failed to add anime to watchlist:", error);
+            alert("Failed to add anime to watchlist.");
+        }
       }
     },
   },

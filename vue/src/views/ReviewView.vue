@@ -18,10 +18,12 @@
           </p>
           <p><strong>Genres:</strong> {{ animeReview.anime.genres }}</p>
           <p><strong>Background:</strong> {{ animeReview.anime.background }}</p>
-          <button @click="deleteReview(animeReview.review.reviewId)">Delete Review</button>
+          <button class="delete-button" @click="deleteReview(animeReview.review.reviewId)">
+            <font-awesome-icon :icon="['fas', 'trash-can']" />
+          </button>
           <div class="review-edit-container">
             <button class="edit-review-button" @click.stop="startEditing(animeReview.review)">
-              Edit Review
+              <font-awesome-icon :icon="['fas', 'pen-to-square']" /> Edit Review
             </button>
             <form v-if="animeReview.review.showForm" @submit.prevent="saveReviewChanges(animeReview.review)">
               <div class="form-group">
@@ -54,7 +56,6 @@
   </div>
 </template>
 
-
 <script>
 import ProfileService from "../services/ProfileService";
 
@@ -79,18 +80,18 @@ export default {
       this.tempReview = { ...review };
       review.showForm = true;
     },
-    toggleForm(review) {
-      review.showForm = !review.showForm;
-    },
     async saveReviewChanges(originalReview) {
-      const index = this.animeReviews.findIndex(
-        (ar) => ar.review.reviewId === originalReview.reviewId
-      );
-      if (index !== -1) {
-        this.animeReviews[index].review = { ...this.tempReview };
-        originalReview.showForm = false;
-        await this.updateReview(this.tempReview);
-      }
+      const updatedReview = {
+        reviewId: originalReview.reviewId,
+        rating: this.tempReview.rating,
+        reviewText: this.tempReview.reviewText
+      };
+
+      originalReview.rating = this.tempReview.rating;
+      originalReview.reviewText = this.tempReview.reviewText;
+      originalReview.showForm = false;
+
+      await this.updateReview(updatedReview);
     },
     async updateReview(review) {
       try {
@@ -123,7 +124,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 .reviews-container {
@@ -194,6 +194,7 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
 .review-edit-container {
   max-width: 600px;
   margin: auto;
@@ -259,5 +260,16 @@ form {
 
 .edit-review-button:hover {
   background-color: whitesmoke;
+}
+
+.delete-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 19px;
+}
+
+.delete-button:hover {
+  color: #ce1f31;
 }
 </style>

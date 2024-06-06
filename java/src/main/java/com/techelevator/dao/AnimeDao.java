@@ -4,7 +4,7 @@ import com.techelevator.model.Anime;
 
 public interface AnimeDao {
 
-    boolean animeExists(Anime anime);
+    boolean animeExists(String title);
     int getAnimeId(String title);
 
 }

@@ -33,7 +33,7 @@ public class JdbcWatchlistDao implements WatchlistDao {
                 "studio_name, studio_url, genres, background, synopsis)" +
                 "VALUES  (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-        boolean animeExists = animeDao.animeExists(anime);
+        boolean animeExists = animeDao.animeExists(anime.getTitle());
 
         try {
             if (!animeExists) {
@@ -73,8 +73,6 @@ public class JdbcWatchlistDao implements WatchlistDao {
                 Anime anime = mapRowToAnime(results);
                 Watchlist watchlist = new Watchlist();
                 watchlist.setWatchlistId(results.getInt("watchlist_id"));
-//                watchlist.setUserId(results.getInt("user_id"));
-//                watchlist.setAnimeId(results.getInt("anime_id"));
 
                 AnimeWatchlistDto animeWatchlistDto = new AnimeWatchlistDto();
                 animeWatchlistDto.setAnime(anime);
